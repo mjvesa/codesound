@@ -15,6 +15,6 @@ public class SongController {
 
 	@GetMapping("/song")
 	public Song song(@RequestParam(value = "id", defaultValue = "0") Long id) {
-		return new Song(counter.incrementAndGet(), String.format(template, name));
+		return new Song(0, "Math.sin(t)");
 	}
 }
