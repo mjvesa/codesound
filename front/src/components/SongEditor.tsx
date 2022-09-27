@@ -1,9 +1,26 @@
-import { useRef, useState } from "react";
-import { Button, Input } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Button, Grid, Input } from "@mui/material";
+import { useQuery } from "react-query";
+
+interface Song {
+  id: number;
+  name: string;
+  code: string;
+}
 
 export const SongEditor = () => {
   const inputRef = useRef(null);
   const [muzak, setMuzak] = useState("");
+  const [songs, setSongs] = useState<Song[]>([]);
+
+  const { isLoading, error, data } = useQuery("repoData", () =>
+    fetch("http://localhost:8080/songs").then((res) => res.json())
+  );
+
+  useEffect(() => {
+    setSongs(data);
+  }, data);
+
   const playSound = () => {
     const f = new Function("const t = arguments[0]; return " + muzak + ";");
     console.log("pzzppzz" + muzak);
@@ -39,14 +56,28 @@ export const SongEditor = () => {
   };
 
   return (
-    <p>
-      Insert muzak here:
-      <Input
-        type="textarea"
-        id="muzak-input"
-        onChange={(ev) => setMuzak(ev.target.value)}
-      ></Input>
-      <Button onClick={playSound}>Play me</Button>
-    </p>
+    <Grid>
+      <div>
+        {isLoading ? (
+          <div>Loading</div>
+        ) : (
+          data.map((x: Song) => (
+            <div>
+              <b>{x.name}</b>
+              <span>{x.code}</span>
+            </div>
+          ))
+        )}
+      </div>
+      <div>
+        Insert muzak here:
+        <Input
+          type="textarea"
+          id="muzak-input"
+          onChange={(ev) => setMuzak(ev.target.value)}
+        ></Input>
+        <Button onClick={playSound}>Play me</Button>
+      </div>
+    </Grid>
   );
 };

@@ -1,20 +1,18 @@
 import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "react-query";
+
 import "./App.css";
-import { Provider } from "react-redux";
-import { Provider as ReduxQueryProvider } from "redux-query-react";
-import store from "./store";
 import { SongEditor } from "./components/SongEditor";
-export const getQueries = (state: any) => state.queries;
+
+const queryClient = new QueryClient();
 
 const App = () => {
   const [count, setCount] = useState(0);
 
   return (
-    <Provider store={store}>
-      <ReduxQueryProvider queriesSelector={getQueries}>
-        <SongEditor />
-      </ReduxQueryProvider>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <SongEditor />
+    </QueryClientProvider>
   );
 };
 
