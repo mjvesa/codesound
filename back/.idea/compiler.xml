@@ -6,7 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rest-service-complete" />
+        <module name="codesound" />
         <module name="back" />
       </profile>
     </annotationProcessing>
@@ -14,7 +14,7 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="back" options="-parameters" />
-      <module name="rest-service-complete" options="-parameters" />
+      <module name="codesound" options="-parameters" />
     </option>
   </component>
 </project>

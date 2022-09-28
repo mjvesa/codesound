@@ -1,5 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Grid, Input } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Input,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  TextareaAutosize,
+} from "@mui/material";
+import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import { useQuery } from "react-query";
 
 interface Song {
@@ -18,8 +29,18 @@ export const SongEditor = () => {
   );
 
   useEffect(() => {
+    console.log(JSON.stringify(data));
     setSongs(data);
   }, data);
+
+  const loadSong = (id: number) => {
+    console.log(id);
+    for (const song of songs) {
+      if (song.id === id) {
+        setMuzak(song.code);
+      }
+    }
+  };
 
   const playSound = () => {
     const f = new Function("const t = arguments[0]; return " + muzak + ";");
@@ -56,28 +77,40 @@ export const SongEditor = () => {
   };
 
   return (
-    <Grid>
-      <div>
-        {isLoading ? (
-          <div>Loading</div>
-        ) : (
-          data.map((x: Song) => (
-            <div>
-              <b>{x.name}</b>
-              <span>{x.code}</span>
-            </div>
-          ))
-        )}
-      </div>
-      <div>
-        Insert muzak here:
-        <Input
-          type="textarea"
-          id="muzak-input"
-          onChange={(ev) => setMuzak(ev.target.value)}
-        ></Input>
-        <Button onClick={playSound}>Play me</Button>
-      </div>
+    <Grid container alignContent={"space-between"} xs={4}>
+      <Grid item xs={1}>
+        <List>
+          {isLoading ? (
+            <div>Loading</div>
+          ) : (
+            data.map((song: Song) => (
+              <ListItem key={song.id}>
+                <ListItemIcon>
+                  <AudiotrackIcon />
+                </ListItemIcon>
+                <ListItemButton onClick={() => loadSong(song.id)}>
+                  {song.name}
+                </ListItemButton>
+              </ListItem>
+            ))
+          )}
+        </List>
+      </Grid>
+      <Grid container xs={3}>
+        <Grid item>
+          <TextareaAutosize
+            id="muzak-input"
+            minRows={10}
+            style={{ fontSize: "20px", fontWeight: "bold" }}
+            value={muzak}
+            onChange={(ev) => setMuzak(ev.target.value)}
+          ></TextareaAutosize>
+        </Grid>
+        <Grid item>
+          <Button onClick={playSound}>Play me</Button>
+          <Button>Save</Button>
+        </Grid>
+      </Grid>
     </Grid>
   );
 };
