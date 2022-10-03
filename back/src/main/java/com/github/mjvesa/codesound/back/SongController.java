@@ -16,15 +16,14 @@ public class SongController {
 
 	@CrossOrigin
 	@GetMapping("/songs")
-	public List<Song> songs(@RequestParam(value = "id", defaultValue = "0") Long id) {
+	public List<Song> getSongs(@RequestParam(value = "id", defaultValue = "0") Long id) {
 		return songService.findAll();
 	}
 
-//	@CrossOrigin
-//	@PostMapping("/song")
-//	public List<Song> songs(@RequestParam(value = "song") Song song) {
-//
-//		System.out.println("Got song " + song.getName());
-//	}
+	@CrossOrigin
+	@PostMapping("/songs")
+	public Song saveSong(@RequestBody Song song) {
+		return songService.save(song);ergw
+	}
 
 }

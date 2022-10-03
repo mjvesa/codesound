@@ -15,4 +15,8 @@ public class SongService {
         var songs  = (List<Song>) songRepository.findAll();
         return songs;
     }
+
+    public Song save(Song song) {
+        return songRepository.save(song);
+    }
 }
