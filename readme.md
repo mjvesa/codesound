@@ -1,6 +1,6 @@
 About
 =====
-This is a practice project in which I try different frontend technologies. It's also
+This is a practice project in which I try different frontend and backend technologies. It's also
 an experiment with bytebeat. Rather than just produce sound from code, I'll try to add
 some interaction and who knows what.
 
