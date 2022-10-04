@@ -15,16 +15,21 @@ import {
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
 import { useMutation, useQuery } from "react-query";
 import { ConfigurableSlider } from "./ConfigurableSlider";
+import { styled } from "@mui/system";
 
 interface Song {
-  id: number;
+  id: number | null;
   name: string;
   code: string;
 }
 
+const ScaryButton = styled(Button)`
+  background-color: red;
+`;
+
 export const SongEditor = () => {
   const [currentSong, setCurrentSong] = useState<Song>({
-    id: -1,
+    id: null,
     name: "",
     code: "",
   });
@@ -45,11 +50,24 @@ export const SongEditor = () => {
       body: JSON.stringify(song),
     };
     return fetch(url, options);
-    // .then((response) => response.json())
-    // .then((data) => {
-    //   console.log(data);
-    // });
   });
+
+  const deleteSong = useMutation((song) => {
+    const url = "http://localhost:8080/songs";
+    const options = {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json;charset=UTF-8",
+      },
+      body: JSON.stringify(song),
+    };
+    return fetch(url, options);
+  });
+
+  const newSong = () => {
+    setCurrentSong({ id: null, name: "New Song", code: "" });
+  };
 
   useEffect(() => {
     setSongs(data);
@@ -141,7 +159,15 @@ export const SongEditor = () => {
             <Button variant="contained" onClick={saveCurrent}>
               Save
             </Button>
-            <Button variant="contained">New Song</Button>
+            <Button variant="contained" onClick={newSong}>
+              New Song
+            </Button>
+            <ScaryButton
+              variant="contained"
+              onClick={() => deleteSong(currentSong)}
+            >
+              Delete
+            </ScaryButton>
           </Stack>
         </Grid>
       </Grid>

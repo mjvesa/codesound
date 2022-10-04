@@ -1,8 +1,6 @@
 package com.github.mjvesa.codesound.back;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +21,13 @@ public class SongController {
 	@CrossOrigin
 	@PostMapping("/songs")
 	public Song saveSong(@RequestBody Song song) {
-		return songService.save(song);ergw
+		return songService.save(song);
+	}
+
+	@CrossOrigin
+	@DeleteMapping("/songs")
+	public void deleteSong(@RequestBody Song song) {
+		songService.delete(song);
 	}
 
 }
