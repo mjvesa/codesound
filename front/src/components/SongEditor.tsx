@@ -132,7 +132,13 @@ export const SongEditor = () => {
         </Grid>
         <Grid container item direction="column" flexGrow={1}>
           <Grid item container spacing={2}>
-            <TextField value={currentSong.name} />
+            <TextField
+              value={currentSong.name}
+              onChange={(ev) => {
+                const newSong = { ...currentSong, name: ev.target.value };
+                setCurrentSong(newSong);
+              }}
+            />
             <textarea
               style={{
                 fontSize: "20px",
@@ -156,7 +162,7 @@ export const SongEditor = () => {
             <Button variant="contained" onClick={playSound}>
               Play me
             </Button>
-            <Button variant="contained" onClick={saveCurrent}>
+            <Button variant="contained" onClick={() => saveCurrent}>
               Save
             </Button>
             <Button variant="contained" onClick={newSong}>
@@ -164,7 +170,7 @@ export const SongEditor = () => {
             </Button>
             <ScaryButton
               variant="contained"
-              onClick={() => deleteSong(currentSong)}
+              onClick={() => deleteSong.mutate(currentSong)}
             >
               Delete
             </ScaryButton>
