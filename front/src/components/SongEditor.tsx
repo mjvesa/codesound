@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import AudiotrackIcon from "@mui/icons-material/Audiotrack";
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { ConfigurableSlider } from "./ConfigurableSlider";
 import { styled } from "@mui/system";
 
@@ -28,6 +28,8 @@ const ScaryButton = styled(Button)`
 `;
 
 export const SongEditor = () => {
+  const queryClient = useQueryClient();
+
   const [currentSong, setCurrentSong] = useState<Song>({
     id: null,
     name: "",
@@ -35,22 +37,34 @@ export const SongEditor = () => {
   });
   const [songs, setSongs] = useState<Song[]>([]);
 
-  const { isLoading, error, data } = useQuery("repoData", () =>
-    fetch("http://localhost:8080/songs").then((res) => res.json())
-  );
+  const { isLoading, error, data } = useQuery(["songData"], async () => {
+    const response = await fetch("http://localhost:8080/songs");
 
-  const saveSong = useMutation((song) => {
-    const url = "http://localhost:8080/songs";
-    const options = {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json;charset=UTF-8",
-      },
-      body: JSON.stringify(song),
-    };
-    return fetch(url, options);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+    return response.json();
   });
+
+  const saveSong = useMutation(
+    (song) => {
+      const url = "http://localhost:8080/songs";
+      const options = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+        },
+        body: JSON.stringify(song),
+      };
+      return fetch(url, options);
+    },
+    {
+      onSuccess: (updatedSong) => {
+        queryClient.setQueryData(["songData"], updatedSong);
+      },
+    }
+  );
 
   const deleteSong = useMutation((song) => {
     const url = "http://localhost:8080/songs";
@@ -162,7 +176,7 @@ export const SongEditor = () => {
             <Button variant="contained" onClick={playSound}>
               Play me
             </Button>
-            <Button variant="contained" onClick={() => saveCurrent}>
+            <Button variant="contained" onClick={saveCurrent}>
               Save
             </Button>
             <Button variant="contained" onClick={newSong}>
@@ -170,7 +184,9 @@ export const SongEditor = () => {
             </Button>
             <ScaryButton
               variant="contained"
-              onClick={() => deleteSong.mutate(currentSong)}
+              onClick={() => {
+                deleteSong.mutate(currentSong);
+              }}
             >
               Delete
             </ScaryButton>
